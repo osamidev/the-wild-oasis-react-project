@@ -49,16 +49,17 @@ const variations = {
 };
 
 const Button = styled.button`
-  font-size: 2rem;
+  border: none;
   border-radius: var(--border-radius-sm);
-  cursor: pointer;
-  &:focus {
-    outline: none;
-  }
-
-  ${(props) => variations[props.variation]}
+  box-shadow: var(--shadow-sm);
 
   ${(props) => sizes[props.size]}
+  ${(props) => variations[props.variation]}
 `;
+
+Button.defaultProps = {
+  variation: "primary",
+  size: "medium",
+};
 
 export default Button;

@@ -6,66 +6,38 @@ import Button from "../../ui/Button";
 import FileInput from "../../ui/FileInput";
 import Textarea from "../../ui/Textarea";
 import { useForm } from "react-hook-form";
-import { createEditCabin } from "../../services/apiCabins";
+import { createCabin } from "../../services/apiCabins";
 import toast from "react-hot-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import FormRow from "../../ui/FormRow";
 
-function CreateCabinForm({ cabinToEdit = {} }) {
-  const { id: editId, ...editValues } = cabinToEdit;
+function CreateCabinForm() {
+  const { register, handleSubmit, reset, getValues, formState } = useForm();
 
-  const { register, handleSubmit, getValues, reset, formState } = useForm({
-    defaultValues: editValues,
-  });
-
-  const isEditMode = Boolean(editId);
   const queryClient = useQueryClient();
 
   const { errors } = formState;
 
-  const { isLoading: isCreating, mutate: createCabin } = useMutation({
-    mutationFn: createEditCabin,
+  const { isLoading: isCreating, mutate } = useMutation({
+    mutationFn: createCabin,
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["cabins"],
       });
       toast.success("New cabin was created!");
-      reset();
     },
     onError: (err) => {
       toast.error(err.message);
     },
   });
-
-  const { isLoading: isEditing, mutate: editCabin } = useMutation({
-    mutationFn: ({ newCabinData, id }) => createEditCabin(newCabinData, id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["cabins"],
-      });
-      toast.success("Cabin was edited successfully!");
-      reset();
-    },
-    onError: (err) => {
-      toast.error(err.message);
-    },
-  });
-
-  const isWorking = isCreating || isEditing;
-
   const onSubmit = (data) => {
-    const image = typeof data.image === "string" ? data.image : data.image[0];
-    if (isEditMode) {
-      editCabin({ newCabinData: { ...data, image }, id: data.id });
-    } else {
-      createCabin({ ...data, image });
-    }
+    mutate({ ...data, image: data.image[0] });
+    // reset();
   };
 
   const OnError = (errors) => {
     console.error(errors);
   };
-
   return (
     <Form onSubmit={handleSubmit(onSubmit, OnError)}>
       <FormRow label={"Cabin name"} error={errors?.name?.message}>
@@ -107,7 +79,7 @@ function CreateCabinForm({ cabinToEdit = {} }) {
           {...register("discount", {
             required: "This field is required",
             validate: (value) =>
-              value <= Number(getValues().regularPrice) ||
+              value <= getValues().regularPrice ||
               "Discount must be less than or equal to regular price",
           })}
         />
@@ -127,11 +99,7 @@ function CreateCabinForm({ cabinToEdit = {} }) {
           id="image"
           accept="image/*"
           {...register("image", {
-            required: isEditMode ? false : "Please upload an image file",
-            validate: (fileList) => {
-              if (isEditMode && typeof fileList === "string") return true;
-              return fileList.length > 0 || "Please upload an image file";
-            },
+            required: "Please upload an image file",
           })}
         />
       </FormRow>
@@ -141,9 +109,7 @@ function CreateCabinForm({ cabinToEdit = {} }) {
         <Button variation="secondary" type="reset">
           Cancel
         </Button>
-        <Button disabled={isWorking}>
-          {isEditMode ? "Edit cabin" : "Create new Cabin"}
-        </Button>
+        <Button disabled={isCreating}>Add cabin</Button>
       </FormRow>
     </Form>
   );

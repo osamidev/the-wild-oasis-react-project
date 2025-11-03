@@ -1,19 +1,12 @@
 import styled from "styled-components";
-import { StyledNavLink, NavList } from "./MainNav";
 import Logo from "./Logo";
-import {
-  HiOutlineCalendarDays,
-  HiOutlineCog6Tooth,
-  HiOutlineHome,
-  HiOutlineHomeModern,
-  HiOutlineUser,
-} from "react-icons/hi2";
+import MainNav from "./MainNav";
 
-const StyledSideBar = styled.aside`
+const StyledSidebar = styled.aside`
   background-color: var(--color-grey-0);
-  padding: 3.2rem 1.6rem;
-  border-right: solid 1px var(--color-grey-100);
-  grid-column: 1 / 2;
+  padding: 3.2rem 2.4rem;
+  border-right: 1px solid var(--color-grey-100);
+
   grid-row: 1 / -1;
   display: flex;
   flex-direction: column;
@@ -22,33 +15,10 @@ const StyledSideBar = styled.aside`
 
 function Sidebar() {
   return (
-    <StyledSideBar>
+    <StyledSidebar>
       <Logo />
-      <NavList>
-        <ul>
-          <StyledNavLink to="/dashboard">
-            <HiOutlineHome />
-            <span>Home</span>
-          </StyledNavLink>
-          <StyledNavLink to="/bookings">
-            <HiOutlineCalendarDays />
-            <span>Bookings</span>
-          </StyledNavLink>
-          <StyledNavLink to="/cabins">
-            <HiOutlineHomeModern />
-            <span>Cabins</span>
-          </StyledNavLink>
-          <StyledNavLink to="/users">
-            <HiOutlineUser />
-            <span>Users</span>
-          </StyledNavLink>
-          <StyledNavLink to="/settings">
-            <HiOutlineCog6Tooth />
-            <span>Settings</span>
-          </StyledNavLink>
-        </ul>
-      </NavList>
-    </StyledSideBar>
+      <MainNav />
+    </StyledSidebar>
   );
 }
 

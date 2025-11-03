@@ -2,12 +2,12 @@ import styled from "styled-components";
 
 const StyledHeader = styled.header`
   background-color: var(--color-grey-0);
-  padding: 3.2rem 1.6rem;
-  border-bottom: 1px solid var(--color-grey-50);
+  padding: 1.2rem 4.8rem;
+  border-bottom: 1px solid var(--color-grey-100);
 `;
 
 function Header() {
-  return <StyledHeader>Header</StyledHeader>;
+  return <StyledHeader>HEADER</StyledHeader>;
 }
 
 export default Header;
