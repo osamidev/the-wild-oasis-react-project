@@ -1,4 +1,4 @@
-import supabase from "./supabase";
+import { supabase } from "./supabase";
 
 export async function getSettings() {
   const { data, error } = await supabase.from("settings").select("*").single();
@@ -10,18 +10,20 @@ export async function getSettings() {
   return data;
 }
 
+const SETTINGS_ID = 1; // Assuming there's only one settings row with ID 1
+
 // We expect a newSetting object that looks like {setting: newValue}
 export async function updateSetting(newSetting) {
   const { data, error } = await supabase
     .from("settings")
     .update(newSetting)
     // There is only ONE row of settings, and it has the ID=1, and so this is the updated one
-    .eq("id", 1)
+    .eq("id", SETTINGS_ID)
     .single();
-
   if (error) {
     console.error(error);
     throw new Error("Settings could not be updated");
   }
+  console.log(data);
   return data;
 }
